@@ -1,6 +1,7 @@
 package com.iteratrlearning.shu_book.chapter_05;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BusinessRuleEngine {
@@ -18,6 +19,13 @@ public class BusinessRuleEngine {
     }
 
     public void run() {
+        // Ordenar reglas por prioridad antes de ejecutar
+        Collections.sort(rules);
         this.rules.forEach(rule -> rule.perform(facts));
+    }
+
+    // Metodo auxiliar para obtener el conteo de reglas (útil para tests)
+    public int countRules() {
+        return rules.size();
     }
 }
