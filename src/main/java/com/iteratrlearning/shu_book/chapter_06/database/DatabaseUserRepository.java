@@ -124,7 +124,8 @@ public class DatabaseUserRepository implements UserRepository {
 
     @Override
     public void close() throws SQLException {
-        conn.close();
+        statementRunner.update("SHUTDOWN"); // Crucial para HSQLDB
+        if (conn != null) conn.close();
     }
 
     public void clear() {
@@ -132,5 +133,4 @@ public class DatabaseUserRepository implements UserRepository {
         statementRunner.update("delete from followers");
         userIdToUser.clear();
     }
-
 }

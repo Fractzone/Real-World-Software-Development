@@ -66,16 +66,12 @@ public class Twootr {
     Position onSendTwoot(final String id, final User user, final String content) {
         var userId = user.getId();
         var twoot = twootRepository.add(id, userId, content);
-        // tag::stream_onSendTwoot[]
         user.followers()
-            .filter(User::isLoggedOn)
-            .forEach(follower ->
-            {
-                follower.receiveTwoot(twoot);
-                userRepository.update(follower);
-            });
-        // end::stream_onSendTwoot[]
-
+                .filter(User::isLoggedOn)
+                .forEach(follower -> {
+                    follower.receiveTwoot(twoot);
+                    userRepository.update(follower); // Persistir posición del seguidor
+                });
         return twoot.getPosition();
     }
 
@@ -91,5 +87,15 @@ public class Twootr {
                 return canDeleteTwoot ? SUCCESS : NOT_YOUR_TWOOT;
             })
             .orElse(UNKNOWN_TWOOT);
+    }
+
+    public void close() {
+        try {
+            userRepository.close();
+            twootRepository.close();
+            System.out.println("Sistemas cerrados y datos persistidos.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -13,12 +13,13 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class DatabaseTwootRepository implements TwootRepository {
+    private final Connection conn;
     private final StatementRunner statementRunner;
     private Position position = Position.INITIAL_POSITION;
 
     public DatabaseTwootRepository() {
         try {
-            var conn = DatabaseConnection.get();
+            this.conn = DatabaseConnection.get();
             conn.createStatement()
                 .executeUpdate(
                     "CREATE TABLE IF NOT EXISTS " +
@@ -77,11 +78,11 @@ public class DatabaseTwootRepository implements TwootRepository {
     @Override
     public void delete(final Twoot twoot) {
         statementRunner.withStatement(
-            "DELETE FROM twoots WHERE position = ?",
-            stmt -> {
-                stmt.setInt(1, position.getValue());
-                stmt.executeUpdate();
-            });
+                "DELETE FROM twoots WHERE position = ?",
+                stmt -> {
+                    stmt.setInt(1, twoot.getPosition().getValue()); // Usar posición del objeto
+                    stmt.executeUpdate();
+                });
     }
 
     // tag::usersTupleLoop[]
@@ -123,5 +124,10 @@ public class DatabaseTwootRepository implements TwootRepository {
     public void clear() {
         statementRunner.update("delete from twoots");
         statementRunner.update("DROP SCHEMA PUBLIC CASCADE");
+    }
+
+    @Override
+    public void close() throws SQLException {
+        if (conn != null) conn.close();
     }
 }
