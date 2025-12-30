@@ -10,4 +10,9 @@ public final class Attributes
     public static final String HEIGHT = "height";
     public static final String TYPE = "type";
     public static final String AMOUNT = "amount";
+
+    public static final String DRUG = "drug";
+    public static final String DATE = "date";
+    public static final String QUANTITY = "quantity";
+    public static final String CONDITIONS = "conditions";
 }

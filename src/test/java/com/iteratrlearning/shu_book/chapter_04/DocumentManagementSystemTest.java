@@ -20,11 +20,30 @@ public class DocumentManagementSystemTest
     private static final String REPORT = RESOURCES + "patient.report";
     private static final String XRAY = RESOURCES + "xray.jpg";
     private static final String INVOICE = RESOURCES + "patient.invoice";
+    private static final String PRESCRIPTION = RESOURCES + "patient.prescription";
     private static final String JOE_BLOGGS = "Joe Bloggs";
 
 // end::eg_constants[]
 
     private DocumentManagementSystem system = new DocumentManagementSystem();
+
+    @Test
+    public void shouldImportPrescription() throws Exception
+    {
+        system.importFile(PRESCRIPTION);
+
+        final Document document = onlyDocument();
+
+        // Verificamos que los atributos se hayan extraído correctamente
+        assertAttributeEquals(document, PATIENT, JOE_BLOGGS);
+        assertAttributeEquals(document, DRUG, "Aspirina"); // Asumiendo que tu archivo de prueba tiene "Aspirina"
+        assertAttributeEquals(document, QUANTITY, "20");
+        assertAttributeEquals(document, DATE, "2025-01-01");
+        assertAttributeEquals(document, CONDITIONS, "Tomar una cada 8 horas despues de comer");
+
+        // Verificamos que el tipo sea correcto
+        assertTypeIs("PRESCRIPTION", document);
+    }
 
     // tag::shouldImportFile[]
     @Test
